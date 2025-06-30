@@ -6,7 +6,6 @@ const prisma = new PrismaClient()
 
 export class PostController {
 
-
     static getPosts = async (
         req: Request,
         res: Response,
@@ -24,9 +23,28 @@ export class PostController {
     }
 
 
-    static deletePost = async () => {
-        return
+    static deletePost = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
 
+        const { id } = req.params;
+        try {
+            const post = await prisma.post.findUnique({
+                where: { id: id }
+            });
+
+            if (!post) {
+                throw new Error('Post not found with id: ' + id);
+            }
+            await prisma.post.delete({
+                where: { id: id }
+            });
+            res.status(200).json(post);
+        } catch (error) {
+            next(error);
+        }
     }
 
     static createPost = async (

@@ -8,24 +8,26 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { useDispatch, } from "react-redux"
+
 import { Button } from "./ui/button"
+import type { Post } from "@/interfaces/post.interface"
+import { deletePostThunk } from "@/posts/thunks";
 
-const invoices = [
-    {
-        invoice: "INV001",
-        paymentStatus: "Paid",
-        totalAmount: "$250.00",
-        paymentMethod: "Credit Card",
-    },
-    {
-        invoice: "INV002",
-        paymentStatus: "Pending",
-        totalAmount: "$150.00",
-        paymentMethod: "PayPal",
-    },
 
-]
-export const TableComponent = ({ posts }: { any }) => {
+interface TableComponentProps {
+    posts: Post[];
+}
+
+
+
+export const TableComponent = ({ posts }: TableComponentProps) => {
+    const dispatch = useDispatch();
+
+
+    const handleOnDlete = (id: string) => {
+        dispatch(deletePostThunk({ id }));
+    }
     return (
         <Table>
             <TableHeader>
@@ -36,14 +38,28 @@ export const TableComponent = ({ posts }: { any }) => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {posts.map((post) => (
-                    <TableRow key={post.id}>
-                        <TableCell className="font-medium w-30">{post.name}</TableCell>
-                        <TableCell className="w-60">{post.description}</TableCell>
-                        <TableCell><Button variant={'destructive'}>Eliminar</Button></TableCell>
+                {posts.length !== 0 ?
+                    posts.map((post) => (
+                        <TableRow key={post.id}>
+                            <TableCell className="font-medium w-30"> {post.name}</TableCell>
+                            <TableCell className="w-60">{post.description}</TableCell>
+                            <TableCell><Button variant={'destructive'}
+                                onClick={() => handleOnDlete(post.id)}
+                            >Eliminar</Button></TableCell>
+                        </TableRow>
+                    ))
+                    :
+                    (<TableRow key={'no-results'}>
+                        <TableCell></TableCell>
+                        <TableCell key={'no-results'} className=" w-full p-2  flex justify-center ">
+                            No hay resultados para la busqueda
+                        </TableCell>
+                        <TableCell></TableCell>
                     </TableRow>
-                ))}
+                    )
+                }
             </TableBody>
+
         </Table>
     )
 }

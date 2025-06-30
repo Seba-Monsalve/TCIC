@@ -17,15 +17,15 @@ app.use(
 
 const PORT = envs.PORT || 3000;
 
-const __dirname = path.resolve();
+const __dirname2 = path.resolve();
 
 app.use("/posts", postController);
 
 
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
+app.use(express.static(path.join(__dirname2, "../frontend/dist")));
 
 app.all("/{*any}", (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+    res.sendFile(path.join(__dirname2, "../frontend/dist/index.html"));
 });
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
